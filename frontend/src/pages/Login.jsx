@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Login() {
   const navigate = useNavigate();
 
@@ -20,10 +22,11 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setMessage("");
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         {
           method: "POST",
           headers: {
@@ -45,6 +48,7 @@ function Login() {
 
       navigate("/dashboard");
     } catch (error) {
+      console.error("Login error:", error);
       setMessage("Unable to connect to the server");
     }
   };
@@ -88,7 +92,11 @@ function Login() {
           </button>
         </form>
 
-        {message && <p className="auth-message">{message}</p>}
+        {message && (
+          <p className="auth-message">
+            {message}
+          </p>
+        )}
 
         <p className="auth-footer">
           Don't have an account?{" "}

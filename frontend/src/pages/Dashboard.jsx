@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
-  const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
 
-  window.location.href = "/login";
-};
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.location.href = "/login";
+  };
 
   const [stats, setStats] = useState({
     notesUploaded: 0,
@@ -24,7 +27,7 @@ function Dashboard() {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          "http://localhost:5000/api/dashboard/stats",
+          `${API_URL}/api/dashboard/stats`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -39,11 +42,13 @@ function Dashboard() {
           return;
         }
 
-        setStats(data.stats || {
-          notesUploaded: 0,
-          aiQuestions: 0,
-          summaries: 0,
-        });
+        setStats(
+          data.stats || {
+            notesUploaded: 0,
+            aiQuestions: 0,
+            summaries: 0,
+          }
+        );
 
         setRecentActivities(data.recentActivities || []);
       } catch (error) {
@@ -94,14 +99,14 @@ function Dashboard() {
         </nav>
 
         <button
-  type="button"
-  className="logout-link logout-button"
-  onClick={handleLogout}
->
-  🚪 Logout
-</button>
-      </aside>
+          type="button"
+          className="logout-link logout-button"
+          onClick={handleLogout}
+        >
+          🚪 Logout
+        </button>
 
+      </aside>
 
       {/* Main Content */}
       <main className="dashboard-content">
@@ -135,7 +140,6 @@ function Dashboard() {
 
         </header>
 
-
         {/* Statistics */}
         <section className="dashboard-stats">
 
@@ -161,7 +165,6 @@ function Dashboard() {
 
           </div>
 
-
           <div className="stat-card">
 
             <div className="stat-icon">
@@ -183,7 +186,6 @@ function Dashboard() {
             </div>
 
           </div>
-
 
           <div className="stat-card">
 
@@ -209,7 +211,6 @@ function Dashboard() {
 
         </section>
 
-
         {/* Quick Actions */}
         <section className="dashboard-section">
 
@@ -225,7 +226,6 @@ function Dashboard() {
             </p>
 
           </div>
-
 
           <div className="quick-action-grid">
 
@@ -253,7 +253,6 @@ function Dashboard() {
 
             </a>
 
-
             <a
               href="/ask-ai"
               className="quick-card"
@@ -277,7 +276,6 @@ function Dashboard() {
               </span>
 
             </a>
-
 
             <a
               href="/summarize"
@@ -307,7 +305,6 @@ function Dashboard() {
 
         </section>
 
-
         {/* Recent Activity */}
         <section className="dashboard-section">
 
@@ -322,7 +319,6 @@ function Dashboard() {
             </p>
 
           </div>
-
 
           {recentActivities.length === 0 ? (
 

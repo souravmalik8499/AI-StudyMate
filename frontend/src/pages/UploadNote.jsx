@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function UploadNote() {
   const [file, setFile] = useState(null);
   const [noteTitle, setNoteTitle] = useState("");
@@ -56,12 +58,14 @@ function UploadNote() {
       formData.append("note", file);
       formData.append("title", noteTitle.trim());
 
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        "http://localhost:5000/api/upload/note",
+        `${API_URL}/api/upload/note`,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         }
@@ -81,7 +85,11 @@ function UploadNote() {
       setFile(null);
       setNoteTitle("");
 
-      document.getElementById("note-file").value = "";
+      const fileInput = document.getElementById("note-file");
+
+      if (fileInput) {
+        fileInput.value = "";
+      }
     } catch (error) {
       console.error("Upload error:", error);
 
@@ -99,7 +107,11 @@ function UploadNote() {
 
         {/* Header */}
         <div className="upload-header">
-          <a href="/dashboard" className="back-link">
+
+          <a
+            href="/dashboard"
+            className="back-link"
+          >
             ← Back to Dashboard
           </a>
 
@@ -107,16 +119,20 @@ function UploadNote() {
             STUDY MATERIAL
           </p>
 
-          <h1>Upload Your Note 📄</h1>
+          <h1>
+            Upload Your Note 📄
+          </h1>
 
           <p>
             Upload your PDF study material and use AI to
             understand it faster.
           </p>
+
         </div>
 
         {/* Upload Card */}
         <div className="upload-card">
+
           <form onSubmit={handleSubmit}>
 
             {/* File Upload */}
@@ -127,7 +143,9 @@ function UploadNote() {
               </div>
 
               <h3>
-                {file ? file.name : "Upload your PDF"}
+                {file
+                  ? file.name
+                  : "Upload your PDF"}
               </h3>
 
               <p>
@@ -151,6 +169,7 @@ function UploadNote() {
 
             {/* Note Title */}
             <div className="input-group">
+
               <label htmlFor="noteTitle">
                 Note Title
               </label>
@@ -165,20 +184,27 @@ function UploadNote() {
                 }
                 required
               />
+
             </div>
 
             {/* Selected File */}
             {file && (
               <div className="selected-file">
+
                 <div>📄</div>
 
                 <div>
-                  <strong>{file.name}</strong>
+
+                  <strong>
+                    {file.name}
+                  </strong>
 
                   <p>
                     {(file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
+
                 </div>
+
               </div>
             )}
 
@@ -208,21 +234,28 @@ function UploadNote() {
             </button>
 
           </form>
+
         </div>
 
         {/* Information */}
         <div className="upload-info">
+
           <div>💡</div>
 
           <div>
-            <h3>What happens after uploading?</h3>
+
+            <h3>
+              What happens after uploading?
+            </h3>
 
             <p>
               Your PDF is securely uploaded to Amazon S3.
               Later, AI StudyMate will process the note so
               you can ask questions and generate summaries.
             </p>
+
           </div>
+
         </div>
 
       </div>

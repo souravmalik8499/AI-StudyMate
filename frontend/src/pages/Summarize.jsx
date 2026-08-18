@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Summarize() {
   const [notes, setNotes] = useState([]);
   const [noteId, setNoteId] = useState("");
@@ -16,7 +18,7 @@ function Summarize() {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          "http://localhost:5000/api/notes/my",
+          `${API_URL}/api/notes/my`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -47,6 +49,7 @@ function Summarize() {
     event.preventDefault();
 
     setSummary("");
+    setSelectedNoteTitle("");
     setError("");
 
     if (!noteId) {
@@ -60,7 +63,7 @@ function Summarize() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/ai/summarize",
+        `${API_URL}/api/ai/summarize`,
         {
           method: "POST",
           headers: {
@@ -107,9 +110,14 @@ function Summarize() {
     const maxWidth = pageWidth - margin * 2;
 
     pdf.setFontSize(18);
-    pdf.text("AI StudyMate - Study Summary", margin, 20);
+    pdf.text(
+      "AI StudyMate - Study Summary",
+      margin,
+      20
+    );
 
     pdf.setFontSize(12);
+
     pdf.text(
       `Note: ${selectedNoteTitle}`,
       margin,
@@ -137,7 +145,9 @@ function Summarize() {
       .replace(/[^a-z0-9]/gi, "_")
       .toLowerCase();
 
-    pdf.save(`${safeTitle || "study"}-summary.pdf`);
+    pdf.save(
+      `${safeTitle || "study"}-summary.pdf`
+    );
   };
 
   return (
@@ -146,7 +156,11 @@ function Summarize() {
 
         {/* Header */}
         <div className="ask-ai-header">
-          <a href="/dashboard" className="back-link">
+
+          <a
+            href="/dashboard"
+            className="back-link"
+          >
             ← Back to Dashboard
           </a>
 
@@ -154,12 +168,15 @@ function Summarize() {
             AI STUDY TOOLS
           </p>
 
-          <h1>Summarize Notes 📝</h1>
+          <h1>
+            Summarize Notes 📝
+          </h1>
 
           <p>
             Turn your lengthy study notes into simple,
             useful summaries for faster revision.
           </p>
+
         </div>
 
         {/* Summary Card */}
@@ -177,6 +194,7 @@ function Summarize() {
               </p>
             ) : notes.length === 0 ? (
               <div className="no-notes-message">
+
                 <p>
                   You haven't uploaded any notes yet.
                 </p>
@@ -187,6 +205,7 @@ function Summarize() {
                 >
                   Upload a Note →
                 </a>
+
               </div>
             ) : (
               <select
@@ -197,6 +216,7 @@ function Summarize() {
                 }
                 className="note-select"
               >
+
                 <option value="">
                   Select a note
                 </option>
@@ -209,6 +229,7 @@ function Summarize() {
                     {note.title}
                   </option>
                 ))}
+
               </select>
             )}
 
@@ -221,7 +242,10 @@ function Summarize() {
             <button
               type="submit"
               className="ask-ai-button"
-              disabled={loading || notes.length === 0}
+              disabled={
+                loading ||
+                notes.length === 0
+              }
             >
               {loading
                 ? "AI is reading your note..."
@@ -229,6 +253,7 @@ function Summarize() {
             </button>
 
           </form>
+
         </div>
 
         {/* Summary Result */}
@@ -236,17 +261,23 @@ function Summarize() {
           <div className="ai-answer-card">
 
             <div className="ai-answer-header">
+
               <div className="ai-answer-icon">
                 📝
               </div>
 
               <div>
-                <h2>Study Summary</h2>
+
+                <h2>
+                  Study Summary
+                </h2>
 
                 <p>
                   Based on: {selectedNoteTitle}
                 </p>
+
               </div>
+
             </div>
 
             <div className="ai-answer-content">

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Signup() {
   const navigate = useNavigate();
 
@@ -22,6 +24,7 @@ function Signup() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setMessage("");
 
     if (formData.password !== formData.confirmPassword) {
       setMessage("Passwords do not match");
@@ -30,7 +33,7 @@ function Signup() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/register",
+        `${API_URL}/api/auth/register`,
         {
           method: "POST",
           headers: {
@@ -57,6 +60,7 @@ function Signup() {
         navigate("/login");
       }, 1000);
     } catch (error) {
+      console.error("Signup error:", error);
       setMessage("Unable to connect to the server");
     }
   };
@@ -124,7 +128,11 @@ function Signup() {
           </button>
         </form>
 
-        {message && <p className="auth-message">{message}</p>}
+        {message && (
+          <p className="auth-message">
+            {message}
+          </p>
+        )}
 
         <p className="auth-footer">
           Already have an account?{" "}
